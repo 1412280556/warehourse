@@ -218,12 +218,11 @@ public class InStockController {
         return ResponseBean.success(QrCodeBase64);
     }
 
-//    @ControllerEndpoint(exceptionMessage = "提交失败", operation = "提交")
-//    @ApiOperation(value = "提交", notes = "提交")
+    @ControllerEndpoint(exceptionMessage = "提交失败", operation = "提交")
+    @ApiOperation(value = "提交", notes = "提交")
     @GetMapping("/submit/{id}")
     public ResponseBean submitQrcode(@PathVariable Long id){
         inStockService.submitQrCode(id);
         return ResponseBean.success(200);
     }
-
 }

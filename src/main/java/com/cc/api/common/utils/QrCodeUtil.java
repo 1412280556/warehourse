@@ -203,7 +203,7 @@ public class QrCodeUtil {
             HashMap<EncodeHintType, Comparable> hints = new HashMap<>();
             hints.put(EncodeHintType.CHARACTER_SET, "utf-8"); // 指定字符编码为“utf-8”
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); // 指定二维码的纠错等级为中级
-            hints.put(EncodeHintType.MARGIN, 3); // 设置图片的边距
+            hints.put(EncodeHintType.MARGIN, 2); // 设置图片的边距
             try {
                 QRCodeWriter writer = new QRCodeWriter();
 //                BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, width, height, hints);
