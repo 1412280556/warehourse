@@ -61,8 +61,13 @@ public class InStockServiceImpl implements InStockService {
     public void submitQrCode(Long id) {
         //查出来instockItem 对象
         InStockItem isi = instockItemMapper.selectByPrimaryKey(id);
-        //设置状态 为1 已确认
-        isi.setStatus(1);
+        if(isi.getStatus() == 1){
+            //重复点击即为互斥
+            isi.setStatus(0);
+        }else{
+            //设置状态 为1 已确认
+            isi.setStatus(1);
+        }
        // System.out.println(instockItemMapper.selectByPrimaryKey(id));
         instockItemMapper.updateByPrimaryKey(isi);
     }
@@ -137,21 +142,14 @@ public class InStockServiceImpl implements InStockService {
                 List<Product> products = productMapper.selectByExample(o1);
                 if(!CollectionUtils.isEmpty(products)){
                     Product product = products.get(0);
-                    //插入二维码入数据库，链接应为 接口调用提交的链接（此接口不设置权限，且应设为外网地址
-                    String url = "http://47.105.168.28:8080/ConfirmBtn/" + product.getId();
-                    //调用二维码的生成方法
-                    String QrCodeBase64 = QrCodeUtil.createQRCode(url,100,100,String.valueOf(product.getId()));
-
-                    product.setImageUrl(QrCodeBase64);
-                    //更新数据库内容
-                    productMapper.updateByPrimaryKey(product);
-
+                    getProduct(product);
                     InStockItemVO inStockItemVO = new InStockItemVO();
                     BeanUtils.copyProperties(product,inStockItemVO);
                     inStockItemVO.setCount(inStockInfo.getProductNumber());
                     inStockDetailVO.getItemVOS().add(inStockItemVO);
 
-                    InStockItem inStockItem = InStockServiceImpl.this.getInStockItem(product);
+                    InStockItem inStockItem = getInStockItem(product);
+                    inStockItem.setImageUrl(product.getImageUrl());
                     inStockItem.setCount(inStockInfo.getProductNumber());
                     inStockItem.setStatus(0);//0 未确认  1 确认
 
@@ -164,6 +162,7 @@ public class InStockServiceImpl implements InStockService {
                     }else{
                         //有则更新
                         //instockItemMapper.updateById(inStockItemVO);
+                        inStockItem.getId();
                         instockItemMapper.updateByPrimaryKey(inStockItem);
                     }
                 }else {
@@ -174,6 +173,29 @@ public class InStockServiceImpl implements InStockService {
             throw new ServiceException("入库编号为:["+inNum+"]的明细找不到,或已被删除");
         }
         return inStockDetailVO;
+    }
+
+    /**
+     * 获取id列表
+     * @param id
+     * @return
+     */
+    public List<Long> getItemId(Long id){
+
+        return null;
+    }
+
+    /**
+     * 二维码生成
+     */
+    public void getProduct(Product product) throws IOException {
+        //插入二维码入数据库，链接应为 接口调用提交的链接（此接口不设置权限，且应设为外网地址
+        String url = "http://47.105.168.28/ConfirmBtn?id=" + product.getId();
+        //调用二维码的生成方法
+        String QrCodeBase64 = QrCodeUtil.createQRCode(url,100,100,String.valueOf(product.getId()));
+        product.setImageUrl(QrCodeBase64);
+        //更新数据库内容
+        productMapper.updateByPrimaryKey(product);
     }
 
     public InStockItem getInStockItem(Product product){
