@@ -30,7 +30,11 @@ public enum  ErrorCodeEnum implements BaseCodeInterface {
     PRODUCT_OUT_STOCK_NUMBER_ERROR(30008,"物资发放数量非法"),
     PRODUCT_IN_STOCK_EMPTY(30006,"物资入库不能为空"),
     PRODUCT_OUT_STOCK_EMPTY(30007,"物资发放不能为空"),
-    PRODUCT_STOCK_ERROR(30009,"物资库存不足");
+    PRODUCT_STOCK_ERROR(30009,"物资库存不足"),
+    Query_DATA_NULL_EXCEPTION(50001,"查询数据不存在");
+
+
+
     /** 错误码 */
     private int resultCode;
 

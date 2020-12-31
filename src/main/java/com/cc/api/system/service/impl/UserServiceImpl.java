@@ -453,4 +453,15 @@ public class UserServiceImpl implements UserService {
         }
         return userInfoVO;
     }
+
+    
+    /**
+     * 根据id查用户
+     */
+	@Override
+	public User findUserById(Long id) {
+		User user = userMapper.selectByPrimaryKey(id);
+		System.out.println(user);
+		return user;
+	}
 }

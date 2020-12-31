@@ -26,7 +26,7 @@ public class ScannerVO {
 
     private Integer outstockstatus;
 
-    private Long userId;
+    private String userName;
 
     private String imageUrl;
 

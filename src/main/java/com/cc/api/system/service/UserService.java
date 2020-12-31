@@ -16,7 +16,12 @@ public interface UserService {
      * @return
      */
      User findUserByName(String name);
-
+     
+     /**
+      * 根据用户id查用户
+      */
+     User findUserById(Long id);
+     
     /**
      * 查询用户角色
      *

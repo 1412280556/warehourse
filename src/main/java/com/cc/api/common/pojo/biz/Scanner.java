@@ -1,7 +1,5 @@
 package com.cc.api.common.pojo.biz;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.Id;
@@ -29,7 +27,7 @@ public class Scanner {
 
     private Integer outstockstatus;
 
-    private Long userId;
+    private String userName;
 
     private String imageUrl;
 }
