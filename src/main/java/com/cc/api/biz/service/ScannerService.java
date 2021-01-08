@@ -1,10 +1,12 @@
 package com.cc.api.biz.service;
 
 import com.cc.api.biz.vo.ScannerVO;
+import com.cc.api.common.pojo.biz.QrcodeDownload;
 import com.cc.api.common.pojo.biz.Scanner;
 import com.cc.api.system.vo.PageVO;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface ScannerService {
 
@@ -12,7 +14,13 @@ public interface ScannerService {
 
     void generateQrCode(Long id) throws IOException;
 
-    void submit(Long id);
+    void submit(Long id,Integer status);
 
     Scanner queryById(Long id);
+    
+    Scanner queryByPid(Long pid);
+    
+    List<Scanner> findAll();
+    
+    List<QrcodeDownload> findImage();
 }

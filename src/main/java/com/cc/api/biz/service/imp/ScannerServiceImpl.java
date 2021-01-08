@@ -7,6 +7,7 @@ import com.cc.api.biz.vo.ScannerVO;
 import com.cc.api.common.bean.ActiveUser;
 import com.cc.api.common.exception.ErrorCodeEnum;
 import com.cc.api.common.exception.ServiceException;
+import com.cc.api.common.pojo.biz.QrcodeDownload;
 import com.cc.api.common.pojo.biz.Scanner;
 import com.cc.api.common.pojo.system.User;
 import com.cc.api.common.utils.QrCodeUtil;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -71,11 +73,11 @@ public class ScannerServiceImpl implements ScannerService {
     }
 
     @Override
-    public void submit(Long id) {
+    public void submit(Long id,Integer status) {
         //根据id查出单行所有的数据
         Scanner scanner = scannerMapper.selectByPrimaryKey(id);
-        
-        
+        System.out.println(status);
+        //查出user操作用户
         ActiveUser activeUser = (ActiveUser) SecurityUtils.getSubject().getPrincipal();
         Long userId  =  activeUser.getUser().getId();
         System.out.println(userId);;
@@ -83,27 +85,24 @@ public class ScannerServiceImpl implements ScannerService {
         User user =  userService.findUserById(userId);
         
         String username = user.getUsername();
-        System.out.println(username);
+        
+//        Integer scanStatus = scanner.getScanStatus();
 
-        if(scanner.getInstockstatus() == null || scanner.getInstockstatus().equals("") || scanner.getInstockstatus()==0){
-            //设定1 为已入库
-            scanner.setInstockstatus(1);
-            //设定当前时间
-            scanner.setInstocktime(new Date());
-          
-            scanner.setUserName(username);
-
-            //更新数据库
-            scannerMapper.updateByPrimaryKey(scanner);
-        }else if(scanner.getOutstockstatus() == null || scanner.getOutstockstatus().equals("") || scanner.getOutstockstatus()==0){
-            //设定1 为已入库
-            scanner.setOutstockstatus(1);
-            //设定当前时间
-            scanner.setOutstocktime(new Date());
-            scanner.setUserName(username);
-            //更新数据库
-            scannerMapper.updateByPrimaryKey(scanner);
+        //判断，如果scan_status == 0 则是入库扫描，如果scan_status == 1 则为出库扫描
+        if(status == 0 && scanner.getInstockstatus() == 0) {
+        	scanner.setInstockstatus(1);
+        	scanner.setInstocktime(new Date());
+        	scanner.setUserName(username);
+        	scannerMapper.updateByPrimaryKey(scanner);
+        }else if(status == 1 && scanner.getOutstockstatus() == 0) {
+        	scanner.setOutstockstatus(1);
+        	scanner.setOutstocktime(new Date());
+        	scanner.setUserName(username);
+        	scannerMapper.updateByPrimaryKey(scanner);
+        }else if (scanner.getOutstockstatus() == 1 || scanner.getInstockstatus() == 1) {
+        	throw new ServiceException(ErrorCodeEnum.QR_CODE_ALREADY_USERD);
         }
+
     }
 
     @Override
@@ -111,8 +110,37 @@ public class ScannerServiceImpl implements ScannerService {
         //根据id查询数据，查出一个scanner
         Scanner scanner =  scannerMapper.selectByPrimaryKey(id);
         if(scanner == null){
-            throw new ServiceException(ErrorCodeEnum.Query_DATA_NULL_EXCEPTION);
+            throw new ServiceException(ErrorCodeEnum.QUERY_DATA_NULL_EXCEPTION);
         }
         return scanner;
     }
+
+	@Override
+	public Scanner queryByPid(Long pid) {
+
+		
+		return null;
+	}
+
+	@Override
+	public List<Scanner> findAll() {
+		return scannerMapper.selectAll();
+	}
+
+	@Override
+	public List<QrcodeDownload> findImage() {
+		
+		List<QrcodeDownload> list = new ArrayList<QrcodeDownload>();
+		
+	
+		List<Scanner> scanners = scannerMapper.selectAll();
+		
+		for(Scanner scanner : scanners) {
+			QrcodeDownload qrcodeDownload = new QrcodeDownload();
+			qrcodeDownload.setId(scanner.getId()); ;
+			qrcodeDownload.setImageUrl(scanner.getImageUrl()); 
+			list.add(qrcodeDownload);
+		}
+		return list;
+	}
 }

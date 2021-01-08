@@ -29,5 +29,7 @@ public class ScannerVO {
     private String userName;
 
     private String imageUrl;
+    
+    private Integer scanStatus;
 
 }

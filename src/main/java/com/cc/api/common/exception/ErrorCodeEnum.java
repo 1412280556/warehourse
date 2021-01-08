@@ -31,7 +31,8 @@ public enum  ErrorCodeEnum implements BaseCodeInterface {
     PRODUCT_IN_STOCK_EMPTY(30006,"物资入库不能为空"),
     PRODUCT_OUT_STOCK_EMPTY(30007,"物资发放不能为空"),
     PRODUCT_STOCK_ERROR(30009,"物资库存不足"),
-    Query_DATA_NULL_EXCEPTION(50001,"查询数据不存在");
+    QUERY_DATA_NULL_EXCEPTION(50001,"查询数据不存在"),
+	QR_CODE_ALREADY_USERD(50002,"请不要重复扫描此二维码");
 
 
 
