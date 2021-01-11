@@ -82,14 +82,13 @@ public class ScannerController {
     
     /**
      * 根据pid查询
-     * @param id
      * @return
      */
     @ControllerEndpoint(exceptionMessage = "根据Pid查询", operation = "查询")
     @ApiOperation(value = "根据Pid查询", notes = "查询")
     @GetMapping("/queryByPid/{pid}")
     public ResponseBean queryByPid(@PathVariable Long pid){
-        Scanner scanner = scannerService.queryByPid(pid);
+        List<Scanner> scanner = scannerService.queryByPid(pid);
         return ResponseBean.success(scanner);
     }
     

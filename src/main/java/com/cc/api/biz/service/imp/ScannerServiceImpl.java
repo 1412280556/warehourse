@@ -116,10 +116,17 @@ public class ScannerServiceImpl implements ScannerService {
     }
 
 	@Override
-	public Scanner queryByPid(Long pid) {
-
+	public List<Scanner> queryByPid(Long pid) {
+		Scanner scanner = new Scanner();
+		scanner.setPid(pid);
 		
-		return null;
+		
+		List<Scanner> scannerList = scannerMapper.select(scanner);
+		
+		if(scannerList.isEmpty()){
+            throw new ServiceException(ErrorCodeEnum.QUERY_DATA_NULL_EXCEPTION);
+        }
+		return scannerList;
 	}
 
 	@Override

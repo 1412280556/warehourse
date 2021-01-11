@@ -18,7 +18,7 @@ public interface ScannerService {
 
     Scanner queryById(Long id);
     
-    Scanner queryByPid(Long pid);
+    List<Scanner> queryByPid(Long pid);
     
     List<Scanner> findAll();
     
